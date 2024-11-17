@@ -1,0 +1,4 @@
+API key: AIzaSyAs39T0aXoadAJ_SMclizosX1cbPmhq8rU
+channel ID: UCBi2mrWuNuyYy4gbM6fU18Q
+uploads ID: UUBi2mrWuNuyYy4gbM6fU18Q
+Fetch API: https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=UUBi2mrWuNuyYy4gbM6fU18Q&key=AIzaSyAs39T0aXoadAJ_SMclizosX1cbPmhq8rU
