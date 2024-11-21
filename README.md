@@ -4,4 +4,4 @@ It gathers video titles and thumbnails from the ABC News channel and displays th
 The second API can take a text file of valid longititude and latitude coordinates and mark them on the google map.
 
 The website also provides a link to a python application which can scrape posts off of reddit and twitter. 
-The python app requires the praw and tweepy packages which can be installed with pip.
+The python app requires the praw and twikit packages which can be installed with pip.
