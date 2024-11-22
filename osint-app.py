@@ -5,7 +5,10 @@ from praw.models.reddit import comment
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-
+import asyncio
+from twikit import Client
+import os
+os.environ["PYTHONIOENCODING"] = "utf-8"
 
 # Author: Maks Dudek
 # Email: mdudek2@hawk.iit.edu
@@ -14,7 +17,6 @@ from tkinter import ttk
 # data analysis. This app can also search for twitter posts and their replies.
 
 # dependencies: pip, praw, twikit
-
 
 # REDDIT SCRAPE FUNCTION
 def reddit_scrape():
@@ -57,6 +59,7 @@ def reddit_scrape():
         data_file.write("Link:" + current_post)
         data_file.write("Upvotes: " + str(submission.score))
 
+
         # Create a Submission instance to look through comments
         submission = reddit.Submission(reddit_instance, url=current_post)
         submission.comments.replace_more(limit=0)
@@ -70,13 +73,62 @@ def reddit_scrape():
         data_file.close()
 
 
-# Twitter/X CRAPE FUNCTION
+# Twitter/X SCRAPE FUNCTION
 
 def twitter_scrape():
-    # WIP
-    print("")
 
+    # twitter login credentials. Left blank on Github for security reasons.
+    # You can use your own twitter account to login.
+    USERNAME = 'mdudek25478'
+    EMAIL = 'mdudek2@hawk.iit.edu'
+    PASSWORD = 'B497Zaym!!05'
 
+    # get the values from the entries
+    twitter_search = t_query.get()
+    twitter_save = t_dir.get()
+
+    # Initialize client
+    client = Client('en-US')
+
+    # login to twitter using asyncio
+    async def main():
+        await client.login(
+            auth_info_1=USERNAME,
+            auth_info_2=EMAIL,
+            password=PASSWORD
+        )
+
+        tweets = await client.search_tweet(twitter_search, 'Top')
+
+        # Iterate through tweets
+        tweet_count = 0
+        for tweet_count, tweet in enumerate(tweets[:5]):
+            print("\n", tweet.user.name)
+            print("\n", tweet.created_at_datetime)
+            print("\n", tweet.favorite_count)
+            print("\n", tweet.text)
+
+            with open(twitter_save, "a", encoding="utf-8", errors="replace") as data_file2:
+                data_file2.write(("\n" + str(tweet.user.name)))
+                data_file2.write(("\n" + str(tweet.created_at_datetime)))
+                data_file2.write(("\n" + str(tweet.favorite_count)))
+                data_file2.write(("\n" + str(tweet.text)))
+
+            # get the current tweet id in order to iterate through replies
+            current_tweet = tweet.id
+            target_tweet = await client.get_tweet_by_id(str(tweet.id))
+            replies = target_tweet.replies
+            reply_count = 0
+            for reply_count, reply in enumerate(replies[:5]):
+                ++reply_count
+                print("\n\treply:", reply.text)
+
+                # write replies to file
+                with open(twitter_save, "a", encoding="utf-8", errors="replace") as data_file2:
+                    data_file2.write("\n\treply:" + str(reply.text))
+
+    asyncio.run(main())
+    
 # GUI CODE
 # main window settings
 window = tk.Tk()
@@ -90,6 +142,7 @@ window.resizable(False, False)
 title_label = tk.Label(window, text="Reddit and Twitter Scraper")
 title_label.place(x=90, y=25)
 title_label.config(font=("Arial", 24, "bold"))
+
 # reddit
 reddit_label = tk.Label(window, text="Subreddit to search in EX: politics")
 reddit_label.place(x=30, y=100)
@@ -110,10 +163,10 @@ twitter_save_location_label.place(x=30, y=350)
 r_sub = tk.StringVar(value="politics")
 r_search = tk.StringVar(value="Trump")
 r_dir = tk.StringVar(value="C:\\Users\\Maks\\Desktop\\scrapes\\reddit\\politics-Trump.txt")
-t_dir = tk.StringVar(value="C:\\Users\Maks\\Desktop\\scrapes\\twitter\\Trump.txt")
 
 # twitter
 t_query = tk.StringVar(value="Trump")
+t_dir = tk.StringVar(value="C:\\Users\Maks\\Desktop\\scrapes\\twitter\\Trump.txt")
 
 # entries
 
