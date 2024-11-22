@@ -79,9 +79,9 @@ def twitter_scrape():
 
     # twitter login credentials. Left blank on Github for security reasons.
     # You can use your own twitter account to login.
-    USERNAME = 'mdudek25478'
-    EMAIL = 'mdudek2@hawk.iit.edu'
-    PASSWORD = 'B497Zaym!!05'
+    USERNAME = ''
+    EMAIL = ''
+    PASSWORD = ''
 
     # get the values from the entries
     twitter_search = t_query.get()
