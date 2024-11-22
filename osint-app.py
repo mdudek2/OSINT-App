@@ -26,10 +26,10 @@ def reddit_scrape():
 
     # API CREDENTIALS FOR PRAW. LEFT BLANK ON GITHUB FOR SECURITY REASONS.
     # make an account on https://www.reddit.com/prefs/apps to get credentials.
-    username = "Various-Psychology94"
-    password = "M4Xyii278!"
-    client_id = "4F8LeDgM4W6i007Ea8Neiw"
-    client_secret = "jB2_CF5s3rrmhVH7KaUaDwC0m2DEYw"
+    username = ""
+    password = ""
+    client_id = ""
+    client_secret = ""
 
     reddit_instance = praw.Reddit(
         client_id=client_id,
