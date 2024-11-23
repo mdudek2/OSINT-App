@@ -8,6 +8,7 @@ from tkinter import ttk
 import asyncio
 from twikit import Client
 import os
+import csv
 os.environ["PYTHONIOENCODING"] = "utf-8"
 
 # Author: Maks Dudek
@@ -17,6 +18,7 @@ os.environ["PYTHONIOENCODING"] = "utf-8"
 # data analysis. This app can also search for twitter posts and their replies.
 
 # dependencies: pip, praw, twikit
+
 
 # REDDIT SCRAPE FUNCTION
 def reddit_scrape():
@@ -39,39 +41,40 @@ def reddit_scrape():
         user_agent="OSINT Post Scraper"
     )
 
-    # create a reddit instance and search for the query
+    # create a reddit instance and search for the query. limit to only 5 posts that match query.
     subreddit = reddit_instance.subreddit(subreddit_name)
     search_results = subreddit.search(query, limit=5)
 
-    # iterate through search results
-    for submission in search_results:
+    # number of posts and comments to extract
+    num_of_posts = 5
+    num_of_comments = 5
+    # open csv file using with open and csv writer
+    with open(save_location + ".csv", mode = "a", newline='', encoding = "utf-8") as posts_file:
 
-        current_post = "https://reddit.com" + submission.permalink
+        post_writer = csv.writer(posts_file)
+        # make the header row for the data in the csv file
+        post_writer.writerow(['URL','linkedURL','Subreddit', 'Title', 'User', 'Upvotes', 'Replies', 'ID'])
 
-        # Print post title, link and upvotes
-        print("\n" + submission.title)
-        print("Link:" + current_post)
-        print("Upvotes: " + str(submission.score))
+        # loop through posts and add data to csv file using csv writer
+        for post in subreddit.search(query, limit = num_of_posts):
+            post_writer.writerow(["https://www.reddit.com" + post.permalink, post.url, post.subreddit, post.title, post.author, post.score, post.num_comments, post.id])
 
-        # Write post title, link, and upvotes to file
-        data_file = open(save_location, "a")
-        data_file.write("\n" + submission.title)
-        data_file.write("Link:" + current_post)
-        data_file.write("Upvotes: " + str(submission.score))
+    # open a new csv file to scrape for comments
+    with open(save_location + "_comments.csv", mode = "a", newline='', encoding = "utf-8") as comments_file:
 
+        # create headers for new csv file
+        comment_writer = csv.writer(comments_file)
+        comment_writer.writerow(['URL', 'Subreddit', 'Title', 'Commenter', 'Upvotes', 'Text'])
 
-        # Create a Submission instance to look through comments
-        submission = reddit.Submission(reddit_instance, url=current_post)
-        submission.comments.replace_more(limit=0)
+        # iterate through posts
+        for post in subreddit.search(query, limit = num_of_posts):
 
-        # Print top 5 comments per post and write to file
-        count = 0
-        for count, comment in enumerate(submission.comments[:5]):
-            print(f"\nTop {count + 1} comment: {comment.body}")
-            data_file.write(f"\nTop {count + 1} comment: {comment.body}")
+            # load comments in post
+            post.comments.replace_more(limit=0)
 
-        data_file.close()
-
+            # iterate through comments and write to seperate csv file
+            for comment in post.comments[:num_of_comments]:
+                comment_writer.writerow(["https://www.reddit.com" + post.permalink,post.subreddit,post.title,comment.author,comment.score,comment.body])
 
 # Twitter/X SCRAPE FUNCTION
 
@@ -97,43 +100,31 @@ def twitter_scrape():
             auth_info_2=EMAIL,
             password=PASSWORD
         )
-
-        tweets = await client.search_tweet(twitter_search, 'Top')
-
-        # Iterate through tweets
+        # search for top tweets
         tweet_count = 0
-        for tweet_count, tweet in enumerate(tweets[:5]):
-            print("\n", tweet.user.name)
-            print("\n", tweet.created_at_datetime)
-            print("\n", tweet.favorite_count)
-            print("\n", tweet.text)
+        tweets = await client.search_tweet(twitter_search, 'top')
 
-            with open(twitter_save, "a", encoding="utf-8", errors="replace") as data_file2:
-                data_file2.write(("\n" + str(tweet.user.name)))
-                data_file2.write(("\n" + str(tweet.created_at_datetime)))
-                data_file2.write(("\n" + str(tweet.favorite_count)))
-                data_file2.write(("\n" + str(tweet.text)))
+        # open csv file to save twitter posts
+        with open(twitter_save + ".csv", mode = "a", newline ="", encoding ="utf-8") as twitter_posts_file:
+            twitter_post_writer = csv.writer(twitter_posts_file)
+            twitter_post_writer.writerow(['ID', 'User', 'Text', 'Date', 'Retweets', 'Favorites'])
 
-            # get the current tweet id in order to iterate through replies
-            current_tweet = tweet.id
-            target_tweet = await client.get_tweet_by_id(str(tweet.id))
-            replies = target_tweet.replies
-            reply_count = 0
-            for reply_count, reply in enumerate(replies[:5]):
-                ++reply_count
-                print("\n\treply:", reply.text)
-
-                # write replies to file
-                with open(twitter_save, "a", encoding="utf-8", errors="replace") as data_file2:
-                    data_file2.write("\n\treply:" + str(reply.text))
+            # iterate through tweets and export them to csv file
+            for tweet_count, tweet in enumerate(tweets[:10]):
+                twitter_post_writer.writerow([tweet.id,tweet.user.screen_name,tweet.text,tweet.created_at,tweet.retweet_count,tweet.favorite_count])
 
     asyncio.run(main())
-    
+
+
+
+
+
+
 # GUI CODE
 # main window settings
 window = tk.Tk()
 window.title("OSINT APP")
-window.geometry("600x500")
+window.geometry("800x600")
 window.resizable(False, False)
 
 # labels
@@ -196,3 +187,4 @@ twitter_button.place(x=30, y=400)
 
 # start the window loop
 window.mainloop()
+
