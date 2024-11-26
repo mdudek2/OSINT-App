@@ -31,6 +31,7 @@ section {
     background-color:#ffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    text-align: center;
 }
 
 .dllink {
@@ -39,5 +40,12 @@ section {
     max-width: 800px;
     background-color:#ffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border-radius: 8px;  
+   
+}
+a:link{
+    color: #415881;
+}
+a:hover{
+    color: rgb(101, 101, 102);
 }
