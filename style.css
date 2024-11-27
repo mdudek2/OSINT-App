@@ -23,17 +23,6 @@ body {
     width: 100px; 
     height: auto; 
 }
-
-section {
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 800px;
-    background-color:#ffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    text-align: center;
-}
-
 .dllink {
     margin: 20px auto;
     padding: 20px;
@@ -43,9 +32,38 @@ section {
     border-radius: 8px;  
    
 }
+section {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color:#ffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+
+}
+
+p{
+    color: #415881;
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color:#ffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; 
+    font-size: large;
+}
 a:link{
     color: #415881;
 }
 a:hover{
     color: rgb(101, 101, 102);
+}
+
+section a img {
+    width: 250px;  
+    height: auto;   
+    border-radius: 8px;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+    margin-bottom: 10px; 
 }
