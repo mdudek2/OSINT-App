@@ -33,10 +33,10 @@ def reddit_scrape():
 
     # API CREDENTIALS NEEDED TO USE PRAW. LEFT BLANK ON GITHUB FOR SECURITY REASONS.
     # make an account on https://www.reddit.com/prefs/apps to get credentials.
-    username = ""
-    password = ""
-    client_id = ""
-    client_secret = ""
+    username = r_user.get()
+    password = r_pass.get()
+    client_id = r_id.get()
+    client_secret = r_secret.get()
 
     # Initialize Reddit API client
     reddit = praw.Reddit(client_id=client_id, client_secret=client_secret, user_agent='test', username=username,password=password)
@@ -78,9 +78,9 @@ def twitter_scrape():
 
     # twitter login credentials. Left blank on Github for security reasons.
     # You can use your own twitter account to login.
-    USERNAME = ""
-    EMAIL = ""
-    PASSWORD = ""
+    USERNAME = t_user.get()
+    EMAIL = t_email.get()
+    PASSWORD = t_pass.get()
 
     # get the values from the entries
     twitter_search = t_query.get()
@@ -108,7 +108,7 @@ def twitter_scrape():
             twitter_post_writer.writerow(["ID", "User", "Text", "Date", "Retweets", "Favorites"])
 
             # iterate through tweets and export them to csv file
-            for tweet_count, tweet in enumerate(tweets[:10]):
+            for tweet_count, tweet in enumerate(tweets[:25]):
                 twitter_post_writer.writerow([tweet.id,tweet.user.screen_name,tweet.text,tweet.created_at,
                 tweet.retweet_count,tweet.favorite_count])
 
@@ -155,10 +155,18 @@ r_sub = tk.StringVar(value="politics")
 r_search = tk.StringVar(value="Trump")
 r_dir = tk.StringVar(value="Enter a Save Location with filename at the end")
 
+r_user = tk.StringVar(value="reddit username")
+r_pass = tk.StringVar(value="reddit password")
+r_id = tk.StringVar(value="Client ID")
+r_secret = tk.StringVar(value="Client Secret")
+
 # twitter
 t_query = tk.StringVar(value="Trump")
 t_dir = tk.StringVar(value="Enter a Save Location with filename at the end")
 
+t_email = tk.StringVar(value="Twitter acc email")
+t_user = tk.StringVar(value="Twitter username")
+t_pass = tk.StringVar(value="Twitter password")
 # entries
 
 # reddit
@@ -171,13 +179,31 @@ reddit_save_entry.place(x=185, y=200)
 reddit_entry.configure(bg = "whitesmoke")
 reddit_search_entry.configure(bg = "whitesmoke")
 
+
+r_user_entry = Entry(window, width=20, textvariable=r_user)
+r_pass_entry = Entry(window, width=20, textvariable=r_pass)
+r_id_entry = Entry(window, width=20, textvariable=r_id)
+r_secret_entry = Entry(window, width=20, textvariable=r_secret)
+r_user_entry.place(x=100, y=450)
+r_pass_entry.place(x=100, y=475)
+r_id_entry.place(x=100,y=500)
+r_secret_entry.place(x=100,y=525)
 # twitter
+
+
 twitter_entry = Entry(window, width=29, textvariable=t_query)
 twitter_entry.place(x=220, y=300)
 twitter_save_entry = Entry(window, width=60, textvariable=t_dir)
 twitter_save_entry.place(x=182, y=350)
 twitter_entry.configure(bg = "whitesmoke")
 twitter_save_entry.configure(bg = "whitesmoke")
+
+t_email_entry = Entry(window, width=20,textvariable=t_email)
+t_user_entry = Entry(window, width=20, textvariable=t_user)
+t_pass_entry = Entry(window, width=20, textvariable=t_pass)
+t_email_entry.place(x=250, y=450)
+t_user_entry.place(x=250, y=475)
+t_pass_entry.place(x=250,y=500)
 
 # buttons
 
